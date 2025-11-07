@@ -72,7 +72,7 @@ npm o yarn
 
 ▶️ Pasos para correr el frontend
 # 1. Clonar el repositorio
-git clone https://github.com/usuario/tienda-virtual.git
+git clone [https://github.com/usuario/tienda-virtual.git](https://github.com/LucasC18/ProyectoFinal-PNT2-TP2/tree/main)
 
 # 2. Entrar al proyecto frontend
 cd TiendaVirtual/frontend
