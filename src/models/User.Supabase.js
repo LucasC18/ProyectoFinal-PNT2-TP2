@@ -5,8 +5,8 @@ export default class UserModelSupabase {
         , apellido
         ,mail
         ,contrasena
-        , descripcion
-        ,esAdmin
+        ,descripcion
+        ,rol
         , embedding) {
         this.id = id
         this.nombre = nombre
@@ -14,7 +14,7 @@ export default class UserModelSupabase {
         this.mail = mail
         this.contrasena = contrasena
         this.descripcion = descripcion
-        this.esAdmin = esAdmin
+        this.rol = rol
         this.embedding = embedding
     }
 
