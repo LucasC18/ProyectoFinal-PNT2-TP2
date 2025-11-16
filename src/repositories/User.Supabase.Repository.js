@@ -32,7 +32,7 @@ export default class UserRepositorySupabase {
   createOne = async ({ nombre, precio, descripcion }) => {
     const { data, error } = await this.supabase
       .from('usuarios')
-      .insert([{ nombre, apellido,mail,contrasena,rol }])
+      .insert([{ nombre, apellido, mail, contrasena, rol }])
       .select()
       .single();
 
@@ -42,10 +42,10 @@ export default class UserRepositorySupabase {
   };
 
   // Actualizar un usuario por ID
-  updateOne = async (id, { nombre, apellido,mail,contrasena,rol  }) => {
+  updateOne = async (id, { nombre, apellido, mail, contrasena, rol }) => {
     const { data, error } = await this.supabase
       .from('usuarios')
-      .update({ nombre, apellido,mail,contrasena,rol  })
+      .update({ nombre, apellido, mail, contrasena, rol })
       .eq('id', id)
       .select()
       .single();

@@ -1,0 +1,45 @@
+@host = http://localhost:3000
+@contentType = application/json
+
+@useremail = "juli-v@example.com"
+@userpwd = "securepassword123"
+
+### Signup (Create a new user)
+POST {{host}}/api/user/signup
+Content-Type: {{contentType}}
+
+{
+  "email": {{useremail}},
+  "password": {{userpwd}}
+}
+
+### Login (Authenticate existing user)
+# Run this *after* signup (and after email confirmation if enabled in Supabase)
+POST {{host}}/api/user/login
+Content-Type: {{contentType}}
+
+{
+  "email": {{useremail}},
+  "password": {{userpwd}}
+}
+
+
+### Login and capture token
+
+# @name login
+POST {{host}}/api/user/login
+Content-Type: {{contentType}}
+
+{
+  "email": {{useremail}},
+  "password": {{userpwd}}
+}
+
+
+### 🪪  Extract token from previous response
+@token = {{login.response.body.token}}
+
+### 👤 3. Use token in protected request
+GET {{host}}/api/v1/products
+Authorization: Bearer {{token}}
+Accept: application/json

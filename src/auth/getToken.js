@@ -1,9 +1,9 @@
 export const getToken = (req) => {
-    const authHeader = req.headers?.authorization;
+  const authHeader = req.headers?.authorization;
 
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-        return null;
-    }
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return null;
+  }
 
-    return authHeader.split(' ')[1];
+  return authHeader.split(' ')[1];
 };
