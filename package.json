@@ -24,9 +24,9 @@
   },
   "contributors": [],
   "scripts": {
-    "dev": "node --watch  app.js",
-    "linter:check": "npx @biomejs/biome lint ./src app.js index.js",
-    "linter:format": "npx @biomejs/biome format --write ./src app.js index.js"
+    "dev": "node --watch  index.js",
+    "linter:check": "npx @biomejs/biome lint ./src  index.js",
+    "linter:format": "npx @biomejs/biome format --write ./src  index.js"
   },
   "dependencies": {
     "@scalar/express-api-reference": "^0.8.24",

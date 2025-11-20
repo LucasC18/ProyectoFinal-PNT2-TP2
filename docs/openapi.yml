@@ -3,12 +3,12 @@ info:
   title: API de Tienda Virtual - NT2
   description: >
     Documentación oficial de la API del proyecto final NT2.  
-    Backend construido con *Node.js + Express + Supabase*.  
+    Backend construido con Node.js + Express + Supabase.  
     Autenticación mediante JWT + Roles (admin/usuario).
   version: 1.0.0
 
 servers:
-  - url: http://localhost:3000
+  - url: http://localhost:5173
     description: Servidor de desarrollo
 
 tags:
@@ -18,9 +18,6 @@ tags:
 
 paths:
 
-  # =========================================================
-  # 🔐 AUTENTICACIÓN
-  # =========================================================
   /api/auth/register:
     post:
       tags: [Autenticación]
@@ -69,9 +66,6 @@ paths:
         "200": { description: Usuario autenticado }
         "401": { description: Token inválido }
 
-  # =========================================================
-  # 👤 CRUD DE USUARIOS
-  # =========================================================
   /api/usuarios:
     get:
       tags: [Usuarios]
@@ -162,9 +156,6 @@ paths:
         "404": { description: No existe }
         "403": { description: Solo admin }
 
-  # =========================================================
-  # 🛒 CRUD DE PRODUCTOS
-  # =========================================================
   /api/productos:
     get:
       tags: [Productos]
@@ -241,260 +232,6 @@ paths:
         "200": { description: Producto eliminado }
         "403": { description: Solo admin }
 
-# =========================================================
-# 🔐 Seguridad: JWT
-# =========================================================
-components:
-  securitySchemes:
-    bearerAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: JWTopenapi: 3.0.3
-info:
-  title: API de Tienda Virtual - NT2
-  description: >
-    Documentación oficial de la API del proyecto final NT2.  
-    Backend construido con *Node.js + Express + Supabase*.  
-    Autenticación mediante JWT + Roles (admin/usuario).
-  version: 1.0.0
-
-servers:
-  - url: http://localhost:3000
-    description: Servidor de desarrollo
-
-tags:
-  - name: Autenticación
-  - name: Usuarios
-  - name: Productos
-
-paths:
-
-  # =========================================================
-  # 🔐 AUTENTICACIÓN
-  # =========================================================
-  /api/auth/register:
-    post:
-      tags: [Autenticación]
-      summary: Registrar un nuevo usuario
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required: [nombre, apellido, mail, contrasena]
-              properties:
-                nombre: { type: string }
-                apellido: { type: string }
-                mail: { type: string, format: email }
-                contrasena: { type: string }
-      responses:
-        "201": { description: Usuario creado }
-        "400": { description: Datos inválidos }
-
-  /api/auth/login:
-    post:
-      tags: [Autenticación]
-      summary: Iniciar sesión
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required: [mail, contrasena]
-              properties:
-                mail: { type: string }
-                contrasena: { type: string }
-      responses:
-        "200": { description: Token generado }
-        "401": { description: Credenciales incorrectas }
-
-  /api/auth/me:
-    get:
-      tags: [Autenticación]
-      summary: Obtener datos del usuario autenticado
-      security:
-        - bearerAuth: []
-      responses:
-        "200": { description: Usuario autenticado }
-        "401": { description: Token inválido }
-
-  # =========================================================
-  # 👤 CRUD DE USUARIOS
-  # =========================================================
-  /api/usuarios:
-    get:
-      tags: [Usuarios]
-      summary: Obtener todos los usuarios (solo admin)
-      security:
-        - bearerAuth: []
-      responses:
-        "200": { description: Lista de usuarios }
-        "403": { description: Requiere rol admin }
-
-    post:
-      tags: [Usuarios]
-      summary: Crear usuario (solo admin)
-      security:
-        - bearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required: [nombre, apellido, mail, contrasena, rol]
-              properties:
-                nombre: { type: string }
-                apellido: { type: string }
-                mail: { type: string }
-                contrasena: { type: string }
-                rol: { type: string, enum: [admin, user] }
-      responses:
-        "201": { description: Usuario creado }
-        "403": { description: Solo admin }
-
-  /api/usuarios/{id}:
-    get:
-      tags: [Usuarios]
-      summary: Obtener un usuario por ID (solo admin)
-      security:
-        - bearerAuth: []
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema: { type: string }
-      responses:
-        "200": { description: Usuario encontrado }
-        "404": { description: No existe }
-        "403": { description: Solo admin }
-
-    put:
-      tags: [Usuarios]
-      summary: Actualizar usuario (solo admin)
-      security:
-        - bearerAuth: []
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema: { type: string }
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                nombre: { type: string }
-                apellido: { type: string }
-                mail: { type: string }
-                descripcion: { type: string }
-                rol: { type: string, enum: [admin, user] }
-      responses:
-        "200": { description: Usuario actualizado }
-        "404": { description: No existe }
-        "403": { description: Solo admin }
-
-    delete:
-      tags: [Usuarios]
-      summary: Eliminar usuario (solo admin)
-      security:
-        - bearerAuth: []
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema: { type: string }
-      responses:
-        "200": { description: Usuario eliminado }
-        "404": { description: No existe }
-        "403": { description: Solo admin }
-
-  # =========================================================
-  # 🛒 CRUD DE PRODUCTOS
-  # =========================================================
-  /api/productos:
-    get:
-      tags: [Productos]
-      summary: Obtener todos los productos
-      responses:
-        "200": { description: Lista de productos }
-
-    post:
-      tags: [Productos]
-      summary: Crear producto (solo admin)
-      security:
-        - bearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required: [nombre, precio]
-              properties:
-                nombre: { type: string }
-                precio: { type: number }
-      responses:
-        "201": { description: Producto creado }
-        "403": { description: Solo admin }
-
-  /api/productos/{id}:
-    get:
-      tags: [Productos]
-      summary: Obtener un producto por ID
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema: { type: string }
-      responses:
-        "200": { description: Producto encontrado }
-        "404": { description: No existe }
-
-    put:
-      tags: [Productos]
-      summary: Actualizar producto (solo admin)
-      security:
-        - bearerAuth: []
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema: { type: string }
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                nombre: { type: string }
-                precio: { type: number }
-      responses:
-        "200": { description: Producto actualizado }
-        "403": { description: Solo admin }
-
-    delete:
-      tags: [Productos]
-      summary: Eliminar producto (solo admin)
-      security:
-        - bearerAuth: []
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema: { type: string }
-      responses:
-        "200": { description: Producto eliminado }
-        "403": { description: Solo admin }
-
-# =========================================================
-# 🔐 Seguridad: JWT
-# =========================================================
 components:
   securitySchemes:
     bearerAuth:
