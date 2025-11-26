@@ -12,7 +12,6 @@ async function runServer() {
     }
 
     console.log("✔ Backend inicializado correctamente");
-
   } catch (error) {
     console.error("❌ Error al iniciar el servidor:", error);
   }
@@ -20,5 +19,5 @@ async function runServer() {
 
 runServer();
 
-// 👉 Exportar server para que Vercel lo use
+// 👉 Exportar server para Vercel
 export default server;
