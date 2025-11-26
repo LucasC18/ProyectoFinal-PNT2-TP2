@@ -19,7 +19,7 @@ import AuthRouter from "./router/auth.router.js";
 import notFoundHandler from "./middleware/notFoundHandler.js";
 
 // Scalar (versión compatible con Vercel CSP)
-import { apiReference } from "@scalar/api-reference";
+import { apiReference } from "@scalar/express-api-reference";
 
 // Necesarios para __dirname en ESModules
 const __filename = fileURLToPath(import.meta.url);
@@ -59,8 +59,9 @@ server.use(
   "/openapi",
   apiReference({
     theme: "kepler",
-    specPath: path.join(__dirname, "../docs/openapi.yml"),
-    hideDownloadButton: true
+    layout: "modern",
+    hideDownloadButton: true,
+    specPath: path.join(__dirname, "../docs/openapi.yaml"),
   })
 );
 
