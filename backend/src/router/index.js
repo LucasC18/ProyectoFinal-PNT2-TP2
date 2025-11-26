@@ -26,6 +26,7 @@ router.use("/products/analytics", ProductAnalyticsRouter);
 // Usuarios & Auth
 router.use("/auth", AuthRouter);
 router.use("/users", UserAllRouter);
-router.use("/users/crud", UserCrudRouter);
+router.use("/users", UserCrudRouter); 
+
 
 export default router;
