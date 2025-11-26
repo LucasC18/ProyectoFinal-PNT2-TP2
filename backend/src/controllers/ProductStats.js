@@ -1,4 +1,4 @@
-import ProductRepositorySupabase from "../repositories/Product.Supabase.Repository.js";
+import ProductRepositorySupabase from '../repositories/Product.Supabase.Repository.js';
 
 export class ProductStatsController {
   static async getStats(req, res) {
@@ -18,7 +18,7 @@ export class ProductStatsController {
         precioMax,
       });
     } catch (err) {
-      res.status(500).json({ error: "Error calculando estadísticas" });
+      res.status(500).json({ error: 'Error calculando estadísticas' });
     }
   }
 }
