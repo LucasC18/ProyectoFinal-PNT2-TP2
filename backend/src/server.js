@@ -1,72 +1,68 @@
-// src/server.js
-import morgan from 'morgan';
-import cors from 'cors';
-import express from 'express';
-import ProductAllRouter from './router/product.all.router.js';
-import ProductRouter from './router/product.crud.router.js';
-import UserAllRouter from './router/user.all.router.js';
-import UserRouter from './router/user.crud.router.js';
-import notFoundHandler from './middleware/notFoundHandler.js';
-import { apiReference } from '@scalar/express-api-reference';
-import path from 'path';
-import AuthRouter from './router/auth.router.js';
-import ProductStatsRouter from "./router/product.stats.router.js";
-import ProductAnalyticsRouter from "./router/product.analytics.router.js";
+import express from "express";
+import cors from "cors";
+import morgan from "morgan";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
+import { apiReference } from "@scalar/express-api-reference";
+
+import path from "path";
+import { fileURLToPath } from "url";
+
+// Rutas
+import ProductAllRouter from "./router/product.all.router.js";
+import ProductCrudRouter from "./router/product.crud.router.js";
+import ProductStatsRouter from "./router/product.stats.router.js";
+import ProductAnalyticsRouter from "./router/product.analytics.router.js";
+import UserAllRouter from "./router/user.all.router.js";
+import UserCrudRouter from "./router/user.crud.router.js";
+import AuthRouter from "./router/auth.router.js";
+
+// Middlewares
+import notFoundHandler from "./middleware/notFoundHandler.js";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const server = express();
 
-// Middlewares básicos
-server.use(morgan('dev'));
+// 📌 Middlewares base
 server.use(express.json());
-
-// ⚠️ En Vercel NO podés fijar un origin local fijo
-// porque el backend va a correr en un dominio público.
-server.use(
-  cors({
-    origin: '*',  // ✔️ Lo abrimos para que funcione desde tu frontend deployado
-    methods: 'GET,POST,PUT,PATCH,DELETE,OPTIONS',
-    allowedHeaders: 'Content-Type, Authorization',
-    credentials: true,
-  }),
-);
-
-// ⚠️ Vercel sí soporta archivos estáticos, pero require rutas absolutas
-server.use('/openapi.yml', express.static(path.join(process.cwd(), 'docs', 'openapi.yml')));
-
-// 📌 Documentación Scalar (Swagger-like)
-server.use(
-  '/docs',
-  apiReference({
-    theme: 'purple',
-    // ⚠️ En producción debe ser ruta absoluta desde Vercel
-    url: '/openapi.yml',
-  }),
-);
-
-// Rutas
-server.use('/api/v1/products', ProductAllRouter);
-server.use('/api/v1/product', ProductRouter);
-server.use('/api/v1/users', UserAllRouter);
-server.use('/api/v1/user', UserRouter);
-server.use('/api/v1/auth', AuthRouter);
-server.use('/api/v1/products', ProductStatsRouter);
-server.use('/api/v1/products', ProductAnalyticsRouter);
-server.use(express.static('public'));
-
-
-// Manejo 404
-server.use(notFoundHandler);
-
-// Seguridad + rate limit
+server.use(cors());
+server.use(morgan("dev"));
 server.use(helmet());
 
-const limiter = rateLimit({
-  windowMs: 60 * 1000,
-  max: 100,
-});
+// 📌 Rate limit
+server.use(
+  rateLimit({
+    windowMs: 60 * 1000,
+    max: 100,
+    message: "Demasiadas solicitudes, intente más tarde."
+  })
+);
 
-server.use(limiter);
+// 📌 Documentación OpenAPI/Scalar
+server.use(
+  "/openapi",
+  apiReference({
+    theme: "kepler",
+    layout: "modern",
+    hideDownloadButton: true,
+    specPath: path.join(__dirname, "../docs/openapi.yml")
+  })
+);
+
+// 📌 Rutas API
+server.use("/api/v1/auth", AuthRouter);
+
+server.use("/api/v1/products", ProductAllRouter);
+server.use("/api/v1/products/crud", ProductCrudRouter);
+server.use("/api/v1/products/stats", ProductStatsRouter);
+server.use("/api/v1/products/analytics", ProductAnalyticsRouter);
+
+server.use("/api/v1/users", UserAllRouter);
+server.use("/api/v1/users/crud", UserCrudRouter);
+
+// 🔚 Middleware Not Found
+server.use(notFoundHandler);
 
 export default server;

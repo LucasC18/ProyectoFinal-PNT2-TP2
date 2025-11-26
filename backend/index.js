@@ -1,33 +1,24 @@
-import { config } from './src/config/config.js';
-import DatabaseFactory from './src/databases/DatabaseFactory.js';
+import { config } from "./src/config/config.js";
+import DatabaseFactory from "./src/databases/DatabaseFactory.js";
+import server from "./src/server.js";
 
-import server from './src/server.js';
-
-// ⚠️ Vercel NO permite app.listen(), así que se deja comentado
-// y simplemente exportamos el server como handler serverless.
-
-const runServer = async () => {
+async function runServer() {
   try {
-    if (config.DATABASE == 'supabase') {
+    console.log("🚀 Iniciando servidor...");
+
+    if (config.DATABASE === "supabase") {
+      console.log("🔌 Conectando a Supabase...");
       DatabaseFactory.getConnection();
     }
 
-    // ❌ Vercel no admite esto, lo comento:
-    /*
-    server.listen(
-      config.SERVER_PORT,
-      config.SERVER_HOST,
-      console.log(`
-                Server is running at: http://${config.SERVER_HOST}:${config.SERVER_PORT}
-            `),
-    );
-    */
+    console.log("✔ Backend inicializado correctamente");
+
   } catch (error) {
-    console.log(`Error en el server`, error.message);
+    console.error("❌ Error al iniciar el servidor:", error);
   }
-};
+}
 
 runServer();
 
-// ✅ Para Vercel: exportamos el handler por defecto
+// 👉 Exportar server para que Vercel lo use
 export default server;
