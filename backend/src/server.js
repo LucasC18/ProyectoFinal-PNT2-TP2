@@ -1,37 +1,33 @@
 import express from "express";
 import cors from "cors";
 import morgan from "morgan";
-import { rateLimit } from "express-rate-limit";
 import path from "path";
 import { fileURLToPath } from "url";
-
-import router from "./router/index.js";
 import { apiReference } from "@scalar/express-api-reference";
 
-const server = express();
+import router from "./router/index.js";
 
-// Necesario para __dirname en ESModules
+// Necesitamos __dirname en ES Modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// ============ Seguridad / Middlewares ============
+const server = express();
+
 server.use(cors());
 server.use(express.json());
 server.use(morgan("dev"));
 
-const limiter = rateLimit({
-  windowMs: 1 * 60 * 1000,
-  max: 50,
-});
-server.use(limiter);
-
-// ============ Servir OpenAPI ============
+// ------------------------------------------------------
+// 📌 Servir el openapi.yml (Vercel busca desde index.js)
+// ------------------------------------------------------
 server.use(
   "/openapi.yml",
-  express.static(path.join(process.cwd(), "openapi.yml"))
+  express.static(path.join(__dirname, "..", "openapi.yml"))
 );
 
-// ============ Documentación Scalar ============
+// ------------------------------------------------------
+// 📌 UI de documentación Scalar
+// ------------------------------------------------------
 server.use(
   "/docs",
   apiReference({
@@ -40,13 +36,17 @@ server.use(
   })
 );
 
-// ============ Rutas API ============
+// ------------------------------------------------------
+// 📌 Tus rutas reales de API
+// ------------------------------------------------------
 server.use("/api/v1", router);
 
-// ============ Levantar servidor ============
-const PORT = process.env.PORT || 3000;
-server.listen(PORT, () => {
-  console.log(`Servidor corriendo en puerto: ${PORT}`);
-});
+// Solo hacemos server.listen() en desarrollo (local)
+if (process.env.VERCEL !== "1") {
+  const PORT = process.env.PORT || 3000;
+  server.listen(PORT, () => {
+    console.log(`Servidor corriendo en puerto ${PORT}`);
+  });
+}
 
 export default server;
