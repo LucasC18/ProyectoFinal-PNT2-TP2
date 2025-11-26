@@ -6,24 +6,25 @@ import { ProductController } from "../controllers/Product.js";
 const ProductCrudRouter = Router();
 
 ProductCrudRouter.post(
-  "/create",
+  "/",
   authenticateToken,
   role("admin"),
   ProductController.createByJson
 );
 
 ProductCrudRouter.put(
-  "/update/:id",
+  "/:id",
   authenticateToken,
   role("admin"),
   ProductController.updateByJson
 );
 
 ProductCrudRouter.delete(
-  "/delete/:id",
+  "/:id",
   authenticateToken,
   role("admin"),
   ProductController.deleteById
 );
+
 
 export default ProductCrudRouter;
