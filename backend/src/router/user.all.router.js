@@ -6,4 +6,6 @@ const UserAllRouter = express.Router();
 
 UserAllRouter.get('/', validateToken, UserController.profile);
 
+
+
 export default UserAllRouter;
