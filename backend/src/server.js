@@ -10,12 +10,10 @@ import notFoundHandler from './middleware/notFoundHandler.js';
 import { apiReference } from '@scalar/express-api-reference';
 import path from 'path';
 import AuthRouter from './router/auth.router.js';
-import ProductStatsRouter from "./router/product.stats.router.js"; // Crud mas complejo
-import ProductAnalyticsRouter from "./router/product.analytics.router.js"; // Crud mas complejo
+import ProductStatsRouter from "./router/product.stats.router.js";
+import ProductAnalyticsRouter from "./router/product.analytics.router.js";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
-
-
 
 const server = express();
 
@@ -23,20 +21,26 @@ const server = express();
 server.use(morgan('dev'));
 server.use(express.json());
 
+// ⚠️ En Vercel NO podés fijar un origin local fijo
+// porque el backend va a correr en un dominio público.
 server.use(
   cors({
-    origin: 'http://localhost:5173',
+    origin: '*',  // ✔️ Lo abrimos para que funcione desde tu frontend deployado
     methods: 'GET,POST,PUT,PATCH,DELETE,OPTIONS',
     allowedHeaders: 'Content-Type, Authorization',
     credentials: true,
   }),
 );
 
+// ⚠️ Vercel sí soporta archivos estáticos, pero require rutas absolutas
 server.use('/openapi.yml', express.static(path.join(process.cwd(), 'docs', 'openapi.yml')));
+
+// 📌 Documentación Scalar (Swagger-like)
 server.use(
   '/docs',
   apiReference({
     theme: 'purple',
+    // ⚠️ En producción debe ser ruta absoluta desde Vercel
     url: '/openapi.yml',
   }),
 );
@@ -50,11 +54,10 @@ server.use('/api/v1/auth', AuthRouter);
 server.use('/api/v1/products', ProductStatsRouter);
 server.use('/api/v1/products', ProductAnalyticsRouter);
 
-
 // Manejo 404
 server.use(notFoundHandler);
 
-// Rate Limit
+// Seguridad + rate limit
 server.use(helmet());
 
 const limiter = rateLimit({
@@ -63,7 +66,5 @@ const limiter = rateLimit({
 });
 
 server.use(limiter);
-
-
 
 export default server;
