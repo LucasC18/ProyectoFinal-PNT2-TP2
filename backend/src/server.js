@@ -1,84 +1,69 @@
 import express from "express";
 import cors from "cors";
 import morgan from "morgan";
-import helmet from "helmet";
-import rateLimit from "express-rate-limit";
 import path from "path";
+import fs from "fs";
 import { fileURLToPath } from "url";
+import { apiReference } from "@scalar/api-reference";
 
-// Routers
-import ProductAllRouter from "./router/product.all.router.js";
-import ProductCrudRouter from "./router/product.crud.router.js";
-import ProductStatsRouter from "./router/product.stats.router.js";
-import ProductAnalyticsRouter from "./router/product.analytics.router.js";
-import UserAllRouter from "./router/user.all.router.js";
-import UserCrudRouter from "./router/user.crud.router.js";
-import AuthRouter from "./router/auth.router.js";
-
-// Middlewares
-import notFoundHandler from "./middleware/notFoundHandler.js";
-
-// Scalar (versión compatible con Vercel CSP)
-import { apiReference } from "@scalar/express-api-reference";
-
-// Necesarios para __dirname en ESModules
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+import router from "./src/router/index.js";
 
 const server = express();
 
-// -------------------------
+// Necesario para usar __dirname en ESModules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 // Middlewares base
-// -------------------------
-server.use(express.json());
 server.use(cors());
+server.use(express.json());
 server.use(morgan("dev"));
-server.use(helmet());
 
-// Rate limiter
-server.use(
-  rateLimit({
-    windowMs: 60 * 1000,
-    max: 100,
-    message: "Demasiadas solicitudes, intenta más tarde."
-  })
-);
+// -----------------------------
+// 📌 SERVIR openapi.yml
+// -----------------------------
+server.get("/docs/openapi.yml", (req, res) => {
+  const filePath = path.join(__dirname, "openapi.yml");
+  return res.sendFile(filePath);
+});
 
-// -------------------------
-// 📌 1. Servir carpeta /docs como el profe
-// -------------------------
-server.use(
-  "/docs",
-  express.static(path.join(__dirname, "../docs"))
-);
+// -----------------------------
+// 📌 UI de documentación con Scalar
+// -----------------------------
+server.get("/openapi", async (req, res) => {
+  try {
+    const yamlContent = fs.readFileSync(
+      path.join(__dirname, "openapi.yml"),
+      "utf8"
+    );
 
-// -------------------------
-// 📌 2. Documentación con UI (Scalar)
-// -------------------------
-server.use(
-  "/openapi",
-  apiReference({
-    theme: "kepler",
-    layout: "modern",
-    hideDownloadButton: true,
-    specPath: path.join(__dirname, "../docs/openapi.yaml"),
-  })
-);
+    const html = await apiReference({
+      theme: "default",
+      spec: {
+        content: yamlContent,
+        format: "yaml"
+      }
+    });
 
-// -------------------------
-// 📌 Rutas API
-// -------------------------
-server.use("/api/v1/auth", AuthRouter);
+    res.setHeader("Content-Type", "text/html");
+    return res.send(html);
+  } catch (error) {
+    console.error("Error cargando documentación:", error);
+    return res.status(500).send("Error al cargar documentación");
+  }
+});
 
-server.use("/api/v1/products", ProductAllRouter);
-server.use("/api/v1/products/crud", ProductCrudRouter);
-server.use("/api/v1/products/stats", ProductStatsRouter);
-server.use("/api/v1/products/analytics", ProductAnalyticsRouter);
+// -----------------------------
+// 📌 Rutas de tu API
+// -----------------------------
+server.use("/api/v1", router);
 
-server.use("/api/v1/users", UserAllRouter);
-server.use("/api/v1/users/crud", UserCrudRouter);
-
-// 🔚 Middleware Not Found
-server.use(notFoundHandler);
+// -----------------------------
+// 📌 Server online
+// -----------------------------
+const PORT = process.env.PORT || 3000;
+server.listen(PORT, () => {
+  console.log("Servidor corriendo en puerto:", PORT);
+});
 
 export default server;
