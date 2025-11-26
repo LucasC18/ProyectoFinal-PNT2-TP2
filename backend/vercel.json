@@ -1,16 +1,12 @@
 {
   "version": 2,
-  "builds": [
-    { "src": "index.js", "use": "@vercel/node" }
-  ],
-  "routes": [
-    {
-      "src": "/openapi.yml",
-      "dest": "/docs/openapi.yml"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/index.js"
+  "functions": {
+    "index.js": {
+      "includeFiles": "docs/openapi.yml"
     }
+  },
+  "routes": [
+    { "src": "/openapi.yml", "dest": "/docs/openapi.yml" },
+    { "src": "/(.*)", "dest": "/index.js" }
   ]
 }
