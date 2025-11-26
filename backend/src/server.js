@@ -4,6 +4,7 @@ import morgan from "morgan";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 import { apiReference } from "@scalar/express-api-reference";
+import fs from "fs";
 
 import path from "path";
 import { fileURLToPath } from "url";
@@ -64,5 +65,35 @@ server.use("/api/v1/users/crud", UserCrudRouter);
 
 // 🔚 Middleware Not Found
 server.use(notFoundHandler);
+
+server.get("/openapi", (req, res) => {
+  const spec = fs.readFileSync(
+    path.join(__dirname, "../docs/openapi.yml"),
+    "utf8"
+  );
+
+  res.send(`
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>API Docs</title>
+      <meta charset="utf-8" />
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@scalar/express-api-reference/styles.css" />
+    </head>
+    <body>
+      <div id="api-reference"></div>
+      <script type="module">
+        import ApiReference from "https://cdn.jsdelivr.net/npm/@scalar/express-api-reference/dist/browser.js";
+        ApiReference({
+          element: "#api-reference",
+          spec: \`${spec}\`,
+          theme: "kepler"
+        });
+      </script>
+    </body>
+  </html>
+  `);
+});
+
 
 export default server;
