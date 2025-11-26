@@ -17,10 +17,11 @@ const router = express.Router();
 // -------------------------------
 
 // Productos
-router.use("/products", ProductAllRouter);
-router.use("/products/crud", ProductCrudRouter);
+router.use("/products", ProductAllRouter);  // GET /products
+router.use("/products", ProductCrudRouter); // POST, PUT, DELETE /products
 router.use("/products/stats", ProductStatsRouter);
 router.use("/products/analytics", ProductAnalyticsRouter);
+
 
 // Usuarios & Auth
 router.use("/auth", AuthRouter);
