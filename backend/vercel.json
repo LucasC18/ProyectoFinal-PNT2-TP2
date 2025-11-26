@@ -1,6 +1,5 @@
 {
   "version": 2,
-  "includeFiles": "docs/openapi.yml",
   "builds": [
     {
       "src": "index.js",
@@ -8,10 +7,6 @@
     }
   ],
   "routes": [
-    {
-      "src": "/openapi.yml",
-      "dest": "/docs/openapi.yml"
-    },
     {
       "src": "/(.*)",
       "dest": "/index.js"
