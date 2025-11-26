@@ -1,14 +1,9 @@
-import { Router } from 'express';
+import express from 'express';
 import UserController from '../controllers/User.js';
-import { authenticateToken } from '../middleware/authentication.js';
-import role from '../middleware/role.js';
+import validateToken from '../auth/validateToken.js';
 
-const UserAllRouter = Router();
+const UserAllRouter = express.Router();
 
-// GET /users  (solo admin)
-UserAllRouter.get('/', authenticateToken, role('admin'), UserController.getAll);
-
-// GET /users/:id  (admin)
-UserAllRouter.get('/:id', authenticateToken, role('admin'), UserController.getById);
+UserAllRouter.get('/', validateToken, UserController.profile);
 
 export default UserAllRouter;
