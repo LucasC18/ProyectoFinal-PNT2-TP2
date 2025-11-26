@@ -53,6 +53,8 @@ server.use('/api/v1/user', UserRouter);
 server.use('/api/v1/auth', AuthRouter);
 server.use('/api/v1/products', ProductStatsRouter);
 server.use('/api/v1/products', ProductAnalyticsRouter);
+server.use(express.static('public'));
+
 
 // Manejo 404
 server.use(notFoundHandler);
