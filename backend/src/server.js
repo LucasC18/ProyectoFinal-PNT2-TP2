@@ -4,10 +4,10 @@ import morgan from 'morgan';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { apiReference } from '@scalar/express-api-reference';
+import { rateLimit } from 'express-rate-limit';
 
 import router from './router/index.js';
 
-// Necesitamos __dirname en ES Modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -17,8 +17,18 @@ server.use(cors());
 server.use(express.json());
 server.use(morgan('dev'));
 
+const limiter = rateLimit({
+  windowMs: 1 * 60 * 1000, 
+  max: 50,                
+  message: {
+    error: 'Too many requests. Please try again later.',
+  },
+});
+
+server.use('/api', limiter);
+
 // ------------------------------------------------------
-// 📌 Servir el openapi.yml (Vercel busca desde index.js)
+// 📌 Servir openapi.yml (para Scalar y Vercel)
 // ------------------------------------------------------
 server.use('/openapi.yml', express.static(path.join(__dirname, '..', 'openapi.yml')));
 
@@ -33,12 +43,10 @@ server.use(
   }),
 );
 
-// ------------------------------------------------------
-// 📌 Tus rutas reales de API
-// ------------------------------------------------------
+
 server.use('/api/v1', router);
 
-// Solo hacemos server.listen() en desarrollo (local)
+
 if (process.env.VERCEL !== '1') {
   const PORT = process.env.PORT || 3000;
   server.listen(PORT, () => {
@@ -47,3 +55,4 @@ if (process.env.VERCEL !== '1') {
 }
 
 export default server;
+

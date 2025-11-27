@@ -6,28 +6,22 @@ import ProductStatsRouter from "./product.stats.router.js";
 import ProductAnalyticsRouter from "./product.analytics.router.js";
 
 import AuthRouter from "./auth.router.js";
-
 import UserAllRouter from "./user.all.router.js";
 import UserCrudRouter from "./user.crud.router.js";
 
 const router = express.Router();
 
-// -------------------------------
-// 🔥 Agrupar todas las rutas acá
-// -------------------------------
-
 // Productos
-router.use("/products", ProductAllRouter);  // GET /products
-router.use("/products", ProductCrudRouter); // POST, PUT, DELETE /products
-router.use("/products/stats", ProductStatsRouter);
-router.use("/products/analytics", ProductAnalyticsRouter);
+router.use("/products", ProductAllRouter);   // GET /products
+router.use("/products", ProductCrudRouter);  // POST, PUT, DELETE /products
 
+// ESTADÍSTICAS
+router.use("/products", ProductStatsRouter);        // ESTE provee /stats
+router.use("/products", ProductAnalyticsRouter);    // ESTE provee /analytics/prices
 
-// Usuarios & Auth
-// Usuarios & Auth
+// Auth y Users
 router.use("/auth", AuthRouter);
-router.use("/users", UserAllRouter);  
-router.use("/users", UserCrudRouter); 
-
+router.use("/users", UserAllRouter);
+router.use("/users", UserCrudRouter);
 
 export default router;

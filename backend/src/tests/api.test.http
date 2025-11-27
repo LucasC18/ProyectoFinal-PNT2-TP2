@@ -1,44 +1,100 @@
+### ----------------------------------------------------
+### 🔧 CONFIG
+### ----------------------------------------------------
 @host = http://localhost:3000
 @contentType = application/json
 
-@useremail = "juli-v@example.com"
-@userpwd = "securepassword123"
+@email = "lucas@test.com"
+@password = "123456"
 
-### Signup (Create a new user)
+### ----------------------------------------------------
+### 👤 1. SIGNUP  (registro usuario)
+### ----------------------------------------------------
 POST {{host}}/api/user/signup
 Content-Type: {{contentType}}
 
 {
-  "email": {{useremail}},
-  "password": {{userpwd}}
+  "email": {{email}},
+  "password": {{password}}
 }
 
-### Login (Authenticate existing user)
-# Run this *after* signup (and after email confirmation if enabled in Supabase)
-POST {{host}}/api/user/login
-Content-Type: {{contentType}}
-
-{
-  "email": {{useremail}},
-  "password": {{userpwd}}
-}
-
-
-###
-
+### ----------------------------------------------------
+### 🔐 2. LOGIN  (obtener token JWT)
+### ----------------------------------------------------
 # @name login
 POST {{host}}/api/user/login
 Content-Type: {{contentType}}
 
 {
-  "email": {{useremail}},
-  "password": {{userpwd}}
+  "email": {{email}},
+  "password": {{password}}
 }
 
-###
+### Guardamos el token:
 @token = {{login.response.body.token}}
 
-### 👤 3. Use token in protected request
+### ----------------------------------------------------
+### 🔒 3. TEST TOKEN (endpoint protegido)
+### ----------------------------------------------------
 GET {{host}}/api/v1/products
 Authorization: Bearer {{token}}
 Accept: application/json
+
+### ----------------------------------------------------
+### 📦 4. CREAR PRODUCTO (ADMIN REQUIRED)
+### ----------------------------------------------------
+POST {{host}}/api/v1/products
+Authorization: Bearer {{token}}
+Content-Type: {{contentType}}
+
+{
+  "nombre": "Zapatilla Runner Ultra",
+  "precio": 35000
+}
+
+### ----------------------------------------------------
+### 📦 5. OBTENER TODOS LOS PRODUCTOS
+### ----------------------------------------------------
+GET {{host}}/api/v1/products
+Authorization: Bearer {{token}}
+Accept: application/json
+
+### ----------------------------------------------------
+### 📦 6. OBTENER PRODUCTO POR ID
+### Guarda un ID manualmente después de ejecutar GET anterior
+### ----------------------------------------------------
+@productId = REEMPLAZAR_ID
+
+GET {{host}}/api/v1/products/{{productId}}
+Authorization: Bearer {{token}}
+Accept: application/json
+
+### ----------------------------------------------------
+### ✏️ 7. EDITAR PRODUCTO (ADMIN)
+### ----------------------------------------------------
+PUT {{host}}/api/v1/products/{{productId}}
+Authorization: Bearer {{token}}
+Content-Type: {{contentType}}
+
+{
+  "nombre": "Zapatilla Runner Ultra X",
+  "precio": 36000
+}
+
+### ----------------------------------------------------
+### 🗑️ 8. ELIMINAR PRODUCTO (ADMIN)
+### ----------------------------------------------------
+DELETE {{host}}/api/v1/products/{{productId}}
+Authorization: Bearer {{token}}
+
+### ----------------------------------------------------
+### 📊 9. ESTADÍSTICAS DE PRODUCTOS
+### ----------------------------------------------------
+GET {{host}}/api/v1/products/stats
+Authorization: Bearer {{token}}
+
+### ----------------------------------------------------
+### 👥 10. GET USERS (ADMIN ONLY)
+### ----------------------------------------------------
+GET {{host}}/api/user
+Authorization: Bearer {{token}}
