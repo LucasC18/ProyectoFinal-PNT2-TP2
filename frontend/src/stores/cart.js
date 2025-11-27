@@ -25,7 +25,7 @@ export const useCartStore = defineStore('cart', {
         }
         return
       }
-
+     
       // si no existe → agregarlo con cantidad 1
      this.items.push({
   id: producto.id,
@@ -38,6 +38,11 @@ export const useCartStore = defineStore('cart', {
 })
 
     },
+
+    clear() {
+  this.items = [];
+    },
+
 
     remove(index) {
       this.items.splice(index, 1)

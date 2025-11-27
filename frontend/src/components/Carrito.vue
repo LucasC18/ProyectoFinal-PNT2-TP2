@@ -16,31 +16,30 @@ function actualizarCantidad(item, event) {
 
 const total = computed(() => cart.total)
 
-// 🟩 NUEVO: mensaje de respuesta
 const mensaje = ref("")
 
-// 🟩 NUEVO: función finalizar compra
 async function finalizarCompra() {
   try {
     const payload = {
-      items: cart.items.map(item => ({
+      productos: cart.items.map(item => ({
         producto_id: item.id,
-        nombre_producto: item.nombre,
-        cantidad: item.cantidad,
-        precio_unitario: item.precio,
-        precio_final: item.precio * item.cantidad
-      }))
+        nombre: item.nombre,
+        cantidad: item.cantidad, 
+        subtotal: item.precio * item.cantidad
+      })),
+      total: cart.total,
+      fecha: new Date().toISOString()
     }
 
-    await axios.post("http://localhost:3000/api/compras", payload)
+    await axios.post("https://690beb956ad3beba00f68e06.mockapi.io/compras", payload)
 
     mensaje.value = "Compra realizada con éxito 🎉"
 
-    cart.clear() // vacía el carrito
+    cart.clear()
 
   } catch (err) {
     console.error(err)
-    mensaje.value = "Error al procesar la compra"
+    mensaje.value = "Error al procesar la compra ❌"
   }
 }
 </script>
@@ -50,6 +49,7 @@ async function finalizarCompra() {
     <div class="container">
       <h2 class="fw-bold text-success text-center mb-4">Tu Carrito</h2>
 
+      <!-- SI HAY PRODUCTOS -->
       <div v-if="items.length" class="table-responsive">
 
         <table class="table align-middle">
@@ -88,6 +88,7 @@ async function finalizarCompra() {
           </tbody>
         </table>
 
+        <!-- TOTAL GENERAL (SIEMPRE SE VE) -->
         <div class="text-end fw-bold fs-5 mt-3">
           Total: ${{ total }}
         </div>
@@ -98,16 +99,22 @@ async function finalizarCompra() {
           </button>
         </div>
 
-       
+        <!-- MENSAJE -->
         <div v-if="mensaje" class="alert alert-success mt-3">
           {{ mensaje }}
         </div>
 
       </div>
 
+      <!-- CUANDO EL CARRITO QUEDA VACÍO -->
       <div v-else class="text-center text-muted mt-5">
+
+        <!-- Total siempre visible -->
+        <h4 class="mb-3">Total: $0.00</h4>
+
         Tu carrito está vacío 🛒
       </div>
+
     </div>
   </section>
 </template>
