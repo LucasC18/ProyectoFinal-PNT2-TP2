@@ -59,8 +59,11 @@
 </template>
 
 <script>
+import ContactService from "../services/contactService";
+
 export default {
   name: "Contact",
+ 
 
   data() {
     return {
@@ -120,19 +123,29 @@ export default {
       );
     },
 
-    enviar() {
-      if (this.estadoBotonDeshabilitado()) {
-        this.exito = false;
-        this.mensaje = "Corrige los errores antes de enviar";
-        return;
-      }
+   async enviar() {
+  if (this.estadoBotonDeshabilitado()) {
+    this.exito = false;
+    this.mensaje = "Corrige los errores antes de enviar";
+    return;
+  }
 
-      this.exito = true;
-      this.mensaje = "Mensaje enviado correctamente";
+  try {
+    await ContactService.enviarMensaje(this.formData);
 
-      this.formData = this.getInicialData();
-      this.formDirty = this.getInicialData();
-    }
+    this.exito = true;
+    this.mensaje = "Mensaje enviado correctamente ✔️";
+
+    this.formData = this.getInicialData();
+    this.formDirty = this.getInicialData();
+  } catch (error) {
+    this.exito = false;
+    this.mensaje = "Error al enviar el mensaje ❌";
+    console.error(error);
+  }
+}
   }
 };
 </script>
+
+
