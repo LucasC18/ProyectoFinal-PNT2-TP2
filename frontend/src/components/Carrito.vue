@@ -49,17 +49,14 @@ async function finalizarCompra() {
     <div class="container">
       <h2 class="fw-bold text-success text-center mb-4">Tu Carrito</h2>
 
-      <!-- SI YA FINALIZÓ LA COMPRA, MOSTRAR SOLO MENSAJE -->
       <div v-if="mensaje">
         <div class="alert alert-success mt-3">
           {{ mensaje }}
         </div>
       </div>
 
-      <!-- SI NO HAY MENSAJE, MOSTRAR CARRITO NORMAL -->
       <div v-else>
 
-        <!-- SI HAY PRODUCTOS -->
         <div v-if="items.length" class="table-responsive">
 
           <table class="table align-middle">
@@ -110,7 +107,6 @@ async function finalizarCompra() {
 
         </div>
 
-        <!-- CUANDO EL CARRITO QUEDA VACÍO -->
         <div v-else class="text-center text-muted mt-5">
           <h4 class="mb-3">Total: $0.00</h4>
           Tu carrito está vacío 🛒

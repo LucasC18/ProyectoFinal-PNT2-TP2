@@ -7,7 +7,7 @@
         <div v-for="p in ofertas" :key="p.id" class="col-md-4">
           <div class="card border-0 shadow-sm h-100">
 
-            <img :src="p.img" class="card-img-top" />
+            <img :src="p.img" class="product-img" />
 
             <div class="card-body d-flex flex-column justify-content-between">
 
@@ -95,3 +95,15 @@ function agregarAlCarrito(producto) {
 </script>
 
 
+<style scoped>
+
+.product-img {
+  width: 100%;
+  height: 180px;      
+  object-fit: cover;      
+  object-position: center;
+  border-radius: 12px 12px 0 0;
+}
+
+
+</style>

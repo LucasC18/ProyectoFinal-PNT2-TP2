@@ -1,7 +1,6 @@
 <template>
   <section class="home">
 
-    <!-- 👋 BIENVENIDO USUARIO -->
     <div v-if="userName" class="text-center mt-4">
       <h2 class="fw-bold">
         👋 Bienvenido <span class="text-success">{{ userName }}</span>
@@ -65,7 +64,7 @@
             <div class="card border-0 shadow-sm h-100 position-relative">
 
               <div class="position-relative">
-                <img :src="producto.img" class="card-img-top rounded-top" :alt="producto.nombre" />
+                <img :src="producto.img" class="card-img-top rounded-top home-product-img" :alt="producto.nombre" />
 
                 <div v-if="producto.descuento" class="badge-descuento position-absolute top-0 end-0 m-2">
                   -{{ producto.descuento }}%
@@ -119,7 +118,7 @@
 import { ref, onMounted } from "vue";
 
 const productos = ref([]);
-const userName = ref(localStorage.getItem("userName")); // ✅ Ahora funciona
+const userName = ref(localStorage.getItem("userName")); 
 
 onMounted(async () => {
   try {
@@ -177,7 +176,7 @@ const cart = useCartStore()
 function agregarAlCarrito(producto) {
   cart.addToCart({
     ...producto,
-    precio: Number(producto.precioFinal),   // 👈 usar precio con descuento
+    precio: Number(producto.precioFinal),  
   })
   alert(`"${producto.nombre}" agregado al carrito 🛒`)
 }
@@ -185,11 +184,6 @@ function agregarAlCarrito(producto) {
  
 </script>
 
-
-
-
-=======
->>>>>>> main
 <style scoped>
 .home {
   padding-top: 6rem;
@@ -221,4 +215,16 @@ hr {
   transform: translateY(-6px);
   box-shadow: 0 8px 18px rgba(0, 0, 0, 0.1);
 }
+
+.home-product-img {
+  width: 100%;
+  aspect-ratio: 4 / 3;  
+  max-height: 220px;
+  object-fit: contain;     
+  object-position: center;
+  padding: 12px;           
+  background-color: #ffffff;
+  border-radius: 12px 12px 0 0;
+}
+
 </style>

@@ -8,7 +8,8 @@
             Tu tienda de moda online. Las mejores marcas, los mejores precios.
           </p>
         </div>
-        <!--ESTILO NAVBAR-->
+
+
         <div class="col-md-4">
           <h6 class="fw-semibold mb-3">Tienda</h6>
           <ul class="list-unstyled text-muted">
@@ -22,8 +23,8 @@
           <h6 class="fw-semibold mb-3">Atención al cliente</h6>
           <ul class="list-unstyled text-muted">
             <li><RouterLink to="/contact" class="link">Contacto</RouterLink></li>
-            <li><RouterLink to="/envios" class="link">Envíos</RouterLink></li>
-            <li><RouterLink to="/devoluciones" class="link">Devoluciones</RouterLink></li>
+            <li><RouterLink to="/contact" class="link">Envíos</RouterLink></li>
+            <li><RouterLink to="/contact" class="link">Devoluciones</RouterLink></li>
           </ul>
         </div>
       </div>
