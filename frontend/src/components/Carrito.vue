@@ -24,7 +24,7 @@ async function finalizarCompra() {
       productos: cart.items.map(item => ({
         producto_id: item.id,
         nombre: item.nombre,
-        cantidad: item.cantidad, 
+        cantidad: item.cantidad,
         subtotal: item.precio * item.cantidad
       })),
       total: cart.total,
@@ -49,72 +49,75 @@ async function finalizarCompra() {
     <div class="container">
       <h2 class="fw-bold text-success text-center mb-4">Tu Carrito</h2>
 
-      <!-- SI HAY PRODUCTOS -->
-      <div v-if="items.length" class="table-responsive">
-
-        <table class="table align-middle">
-          <thead>
-            <tr>
-              <th>Producto</th>
-              <th>Precio</th>
-              <th>Cantidad</th>
-              <th>Total</th>
-              <th></th>
-            </tr>
-          </thead>
-
-          <tbody>
-            <tr v-for="(item, i) in items" :key="i">
-              <td>{{ item.nombre }}</td>
-              <td>${{ item.precio }}</td>
-
-              <td>
-                <input
-                  type="number"
-                  min="1"
-                  :max="item.stock"
-                  :value="item.cantidad"
-                  @change="actualizarCantidad(item, $event)"
-                  class="form-control w-50"
-                />
-              </td>
-
-              <td>${{ (item.precio * item.cantidad).toFixed(2) }}</td>
-
-              <td>
-                <button @click="eliminar(i)" class="btn btn-sm btn-outline-danger">✕</button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-
-        <!-- TOTAL GENERAL (SIEMPRE SE VE) -->
-        <div class="text-end fw-bold fs-5 mt-3">
-          Total: ${{ total }}
-        </div>
-
-        <div class="text-end mt-3">
-          <button class="btn btn-success" @click="finalizarCompra">
-            Finalizar Compra
-          </button>
-        </div>
-
-        <!-- MENSAJE -->
-        <div v-if="mensaje" class="alert alert-success mt-3">
+      <!-- SI YA FINALIZÓ LA COMPRA, MOSTRAR SOLO MENSAJE -->
+      <div v-if="mensaje">
+        <div class="alert alert-success mt-3">
           {{ mensaje }}
         </div>
-
       </div>
 
-      <!-- CUANDO EL CARRITO QUEDA VACÍO -->
-      <div v-else class="text-center text-muted mt-5">
+      <!-- SI NO HAY MENSAJE, MOSTRAR CARRITO NORMAL -->
+      <div v-else>
 
-        <!-- Total siempre visible -->
-        <h4 class="mb-3">Total: $0.00</h4>
+        <!-- SI HAY PRODUCTOS -->
+        <div v-if="items.length" class="table-responsive">
 
-        Tu carrito está vacío 🛒
+          <table class="table align-middle">
+            <thead>
+              <tr>
+                <th>Producto</th>
+                <th>Precio</th>
+                <th>Cantidad</th>
+                <th>Total</th>
+                <th></th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr v-for="(item, i) in items" :key="i">
+                <td>{{ item.nombre }}</td>
+                <td>${{ item.precio }}</td>
+
+                <td>
+                  <input
+                    type="number"
+                    min="1"
+                    :max="item.stock"
+                    :value="item.cantidad"
+                    @change="actualizarCantidad(item, $event)"
+                    class="form-control w-50"
+                  />
+                </td>
+
+                <td>${{ (item.precio * item.cantidad).toFixed(2) }}</td>
+
+                <td>
+                  <button @click="eliminar(i)" class="btn btn-sm btn-outline-danger">✕</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="text-end fw-bold fs-5 mt-3">
+            Total: ${{ total }}
+          </div>
+
+          <div class="text-end mt-3">
+            <button class="btn btn-success" @click="finalizarCompra">
+              Finalizar Compra
+            </button>
+          </div>
+
+        </div>
+
+        <!-- CUANDO EL CARRITO QUEDA VACÍO -->
+        <div v-else class="text-center text-muted mt-5">
+          <h4 class="mb-3">Total: $0.00</h4>
+          Tu carrito está vacío 🛒
+        </div>
+
       </div>
-
     </div>
   </section>
 </template>
+
