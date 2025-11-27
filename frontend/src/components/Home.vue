@@ -27,14 +27,14 @@
         <div class="col-md-4">
           <div class="p-3 bg-white shadow-sm rounded-3">
             <h5>🚚 Envío Gratis</h5>
-            <p class="text-muted mb-0">En compras mayores a $50</p>
+            <p class="text-muted mb-0">En compras mayores a $5000</p>
           </div>
         </div>
 
         <div class="col-md-4">
           <div class="p-3 bg-white shadow-sm rounded-3">
             <h5>🔒 Compra Segura</h5>
-            <p class="text-muted mb-0">Pagos 100% protegidos</p>
+            <p class="text-muted mb-0">Pagos 100% protegidos y devolución total</p>
           </div>
         </div>
 
