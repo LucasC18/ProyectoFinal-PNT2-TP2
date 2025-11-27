@@ -1,40 +1,38 @@
-import express from 'express';
-import cors from 'cors';
+// src/server.js
 import morgan from 'morgan';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import cors from 'cors';
+import express from 'express';
+import ProductAllRouter from './router/product.all.router.js';
+import ProductRouter from './router/product.crud.router.js';
+import UserAllRouter from './router/user.all.router.js';
+import UserRouter from './router/user.crud.router.js';
+import notFoundHandler from './middleware/notFoundHandler.js';
 import { apiReference } from '@scalar/express-api-reference';
-import { rateLimit } from 'express-rate-limit';
+import path from 'path';
+import AuthRouter from './router/auth.router.js';
+import ProductStatsRouter from "./router/product.stats.router.js"; // Crud mas complejo
+import ProductAnalyticsRouter from "./router/product.analytics.router.js"; // Crud mas complejo
+import helmet from "helmet";
+import rateLimit from "express-rate-limit";
 
-import router from './router/index.js';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 const server = express();
 
-server.use(cors());
-server.use(express.json());
+// Middlewares básicos
 server.use(morgan('dev'));
+server.use(express.json());
 
-const limiter = rateLimit({
-  windowMs: 1 * 60 * 1000, 
-  max: 50,                
-  message: {
-    error: 'Too many requests. Please try again later.',
-  },
-});
+server.use(
+  cors({
+    origin: 'http://localhost:5173',
+    methods: 'GET,POST,PUT,PATCH,DELETE,OPTIONS',
+    allowedHeaders: 'Content-Type, Authorization',
+    credentials: true,
+  }),
+);
 
-server.use('/api', limiter);
-
-// ------------------------------------------------------
-// 📌 Servir openapi.yml (para Scalar y Vercel)
-// ------------------------------------------------------
-server.use('/openapi.yml', express.static(path.join(__dirname, '..', 'openapi.yml')));
-
-// ------------------------------------------------------
-// 📌 UI de documentación Scalar
-// ------------------------------------------------------
+server.use('/openapi.yml', express.static(path.join(process.cwd(), 'docs', 'openapi.yml')));
 server.use(
   '/docs',
   apiReference({
@@ -43,16 +41,29 @@ server.use(
   }),
 );
 
+// Rutas
+server.use('/api/v1/products', ProductAllRouter);
+server.use('/api/v1/product', ProductRouter);
+server.use('/api/v1/users', UserAllRouter);
+server.use('/api/v1/user', UserRouter);
+server.use('/api/v1/auth', AuthRouter);
+server.use('/api/v1/products', ProductStatsRouter);
+server.use('/api/v1/products', ProductAnalyticsRouter);
 
-server.use('/api/v1', router);
+// Manejo 404
+server.use(notFoundHandler);
+
+// Rate Limit
+server.use(helmet());
+
+const limiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 100,
+});
+
+server.use(limiter);
 
 
-if (process.env.VERCEL !== '1') {
-  const PORT = process.env.PORT || 3000;
-  server.listen(PORT, () => {
-    console.log(`Servidor corriendo en puerto ${PORT}`);
-  });
-}
 
 export default server;
 

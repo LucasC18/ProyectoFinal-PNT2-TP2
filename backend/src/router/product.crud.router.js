@@ -12,7 +12,7 @@ ProductCrudRouter.post(
   ProductController.createByJson
 );
 
-ProductCrudRouter.put(
+ProductCrudRouter.patch(
   "/update/:id",
   authenticateToken,
   role("admin"),
